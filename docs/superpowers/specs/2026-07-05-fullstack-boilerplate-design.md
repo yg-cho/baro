@@ -1,7 +1,10 @@
-# 오픈소스 풀스택 보일러플레이트 — 설계 문서
+# baro — 오픈소스 풀스택 보일러플레이트 설계 문서
 
 날짜: 2026-07-05
 상태: 승인됨 (브레인스토밍 완료)
+
+**이름: baro** — 한국어 "바로"에서. "Clone it, run it, it's on — right away."
+npm `create-baro` 및 GitHub `baro-stack`, `barojs` 사용 가능 확인 (2026-07-05 기준).
 
 ## 1. 개요
 
@@ -35,7 +38,7 @@ repo/
 │   ├── db/                   # Drizzle 스키마 + 마이그레이션
 │   ├── auth/                 # Better Auth 설정 (api가 소비)
 │   └── shared/               # zod 스키마, 공용 타입
-├── tooling/create-cli/       # npx create-xxx 마법사
+├── tooling/create-cli/       # npx create-baro 마법사
 └── docs/                     # 레시피 문서
 ```
 
@@ -69,7 +72,7 @@ repo/
 - `admin` role만 접근 가능
 - 첫 어드민은 seed 스크립트로 생성
 
-### 4.3 설치 마법사 (`npx create-<이름>`)
+### 4.3 설치 마법사 (`npx create-baro`)
 질문 2개:
 1. 프로젝트명
 2. DB — 임베디드(PGlite, 바로 시작) / 내 Postgres (URL 입력)
