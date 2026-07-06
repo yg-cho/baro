@@ -27,6 +27,9 @@ export function SessionWidget() {
   return (
     <div className="flex items-center gap-3">
       <span className="text-sm">{session.user.email}</span>
+      <Link href="/todos">
+        <Button variant="ghost">Todos</Button>
+      </Link>
       {session.user.role === "admin" && (
         <Link href="/admin">
           <Button variant="ghost">Admin</Button>
