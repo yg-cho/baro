@@ -19,7 +19,7 @@
     "@baro/shared": "workspace:*",
     "@hono/node-server": "^1.14.0",
     "@hono/zod-openapi": "^1.0.0",
-    "drizzle-orm": "^0.44.0",
+    "drizzle-orm": "^0.45.2",
     "hono": "^4.7.0",
     "zod": "^4.0.0"
   },
