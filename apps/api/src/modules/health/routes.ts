@@ -1,5 +1,5 @@
-import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { healthResponseSchema } from "@baro/shared/schemas/health";
+import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 
 export const healthRoutes = new OpenAPIHono().openapi(
   createRoute({
