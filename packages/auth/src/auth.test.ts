@@ -1,5 +1,5 @@
 import { createDb, runMigrations } from "@baro/db";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { createAuth } from "./index";
 
 describe("auth", () => {

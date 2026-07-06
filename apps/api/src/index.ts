@@ -1,5 +1,5 @@
-import { serve } from "@hono/node-server";
 import { getDb, runMigrations } from "@baro/db";
+import { serve } from "@hono/node-server";
 import { app } from "./app";
 
 const port = Number(process.env.PORT ?? 8000);

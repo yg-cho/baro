@@ -17,7 +17,10 @@ export function enabledSocialProviders() {
 export function createAuth(db: Db) {
   const social = enabledSocialProviders();
 
-  if (process.env.NODE_ENV === "production" && !process.env.BETTER_AUTH_SECRET) {
+  if (
+    process.env.NODE_ENV === "production" &&
+    !process.env.BETTER_AUTH_SECRET
+  ) {
     throw new Error("BETTER_AUTH_SECRET must be set in production");
   }
 
@@ -25,7 +28,9 @@ export function createAuth(db: Db) {
     basePath: "/api/auth",
     secret: process.env.BETTER_AUTH_SECRET ?? "baro-dev-secret-change-me",
     baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:8000",
-    trustedOrigins: [process.env.WEB_ORIGIN ?? "http://localhost:3000"],
+    trustedOrigins: process.env.WEB_ORIGIN
+      ? [process.env.WEB_ORIGIN]
+      : ["http://localhost:3000", "http://127.0.0.1:3000"],
     database: drizzleAdapter(db, { provider: "pg", schema }),
     emailAndPassword: {
       enabled: true,
