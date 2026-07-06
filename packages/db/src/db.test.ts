@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createDb, runMigrations } from "./index";
-import { user } from "./schema";
+import { todo, user } from "./schema";
 
 describe("db", () => {
   it("migrates and inserts a user on in-memory pglite", async () => {
@@ -26,7 +26,6 @@ describe("db", () => {
     await db
       .insert(user)
       .values({ id: "u2", name: "T", email: "todo@example.com" });
-    const { todo } = await import("./schema");
     await db.insert(todo).values({
       id: "t1",
       userId: "u2",

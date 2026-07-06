@@ -5,8 +5,8 @@ export const todoSchema = z.object({
   userId: z.string(),
   title: z.string(),
   completed: z.boolean(),
-  createdAt: z.coerce.string(),
-  updatedAt: z.coerce.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 export const createTodoSchema = z.object({

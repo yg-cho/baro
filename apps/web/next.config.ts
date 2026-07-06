@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // ponytail: E2E hits the dev server via 127.0.0.1 (127.0.0.2/localhost are
-  // squatted or mismatched on this box) — Next 16 blocks cross-origin dev
-  // asset/HMR requests by default, which silently prevents hydration.
+  // E2E drives the dev server via 127.0.0.1; Next dev blocks cross-origin
+  // asset requests unless allowed here.
   allowedDevOrigins: ["127.0.0.1"],
 };
 

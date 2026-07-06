@@ -57,7 +57,11 @@ export function TodoList() {
             >
               {t.title}
             </span>
-            <Button variant="ghost" onClick={() => remove.mutate(t.id)}>
+            <Button
+              variant="ghost"
+              aria-label={`Delete ${t.title}`}
+              onClick={() => remove.mutate(t.id)}
+            >
               ✕
             </Button>
           </li>

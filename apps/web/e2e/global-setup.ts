@@ -4,8 +4,11 @@
 // embedded Postgres) has no way to pick up a reseed done by a separate
 // process after that. Doing it here would silently no-op against the
 // already-running server. This just fails fast if that seed didn't take.
+// ports defined in playwright.config.ts webServer
+const API = "http://127.0.0.1:8100";
+
 export default async function globalSetup() {
-  const res = await fetch("http://127.0.0.1:8100/api/auth/sign-in/email", {
+  const res = await fetch(`${API}/api/auth/sign-in/email`, {
     method: "POST",
     headers: {
       "content-type": "application/json",

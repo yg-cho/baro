@@ -1,8 +1,10 @@
 import { expect, test } from "@playwright/test";
 
 const PW = "password1234";
+// ports defined in playwright.config.ts webServer
+const API = "http://127.0.0.1:8100";
 
-test("signup then login shows the user email", async ({ page }) => {
+test("signup auto-logs-in and shows the user email", async ({ page }) => {
   const email = `smoke-${Date.now()}@e2e.test`;
   await page.goto("/signup");
   await page.getByLabel("Name").fill("Smoke");
@@ -29,25 +31,22 @@ test("admin can open the dashboard", async ({ page }) => {
 test("banned user cannot sign in", async ({ page, request }) => {
   const email = `banned-${Date.now()}@e2e.test`;
   // 가입
-  await request.post("http://127.0.0.1:8100/api/auth/sign-up/email", {
+  await request.post(`${API}/api/auth/sign-up/email`, {
     data: { name: "Banned", email, password: PW },
     headers: { origin: "http://127.0.0.1:3100" },
   });
   // admin으로 정지
-  const adminCtx = await request.post(
-    "http://127.0.0.1:8100/api/auth/sign-in/email",
-    {
-      data: { email: "admin@e2e.test", password: PW },
-      headers: { origin: "http://127.0.0.1:3100" },
-    },
-  );
+  const adminCtx = await request.post(`${API}/api/auth/sign-in/email`, {
+    data: { email: "admin@e2e.test", password: PW },
+    headers: { origin: "http://127.0.0.1:3100" },
+  });
   const cookie = adminCtx.headers()["set-cookie"] ?? "";
   const users = await request.get(
-    `http://127.0.0.1:8100/api/auth/admin/list-users?searchField=email&searchOperator=contains&searchValue=${email}`,
+    `${API}/api/auth/admin/list-users?searchField=email&searchOperator=contains&searchValue=${email}`,
     { headers: { cookie, origin: "http://127.0.0.1:3100" } },
   );
   const userId = (await users.json()).users[0].id;
-  await request.post("http://127.0.0.1:8100/api/auth/admin/ban-user", {
+  await request.post(`${API}/api/auth/admin/ban-user`, {
     data: { userId },
     headers: { cookie, origin: "http://127.0.0.1:3100" },
   });
@@ -56,7 +55,7 @@ test("banned user cannot sign in", async ({ page, request }) => {
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(PW);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.locator("p.text-red-600")).toBeVisible({
+  await expect(page.getByRole("alert")).toBeVisible({
     timeout: 15_000,
   });
 });
@@ -82,6 +81,6 @@ test("todos round trip", async ({ page }) => {
   await page.getByLabel("Toggle ship plan 4").click();
   await expect(page.getByText("ship plan 4")).toHaveClass(/line-through/);
 
-  await page.getByRole("button", { name: "✕" }).click();
+  await page.getByRole("button", { name: "Delete ship plan 4" }).click();
   await expect(page.getByText("Nothing yet.")).toBeVisible();
 });
