@@ -2,6 +2,7 @@ import type { Db } from "@baro/db";
 import { schema } from "@baro/db";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin } from "better-auth/plugins";
 
 export function enabledSocialProviders() {
   return {
@@ -59,6 +60,7 @@ export function createAuth(db: Db) {
         },
       }),
     },
+    plugins: [admin()],
   });
 }
 

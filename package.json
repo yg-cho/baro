@@ -10,7 +10,8 @@
     "build": "turbo run build",
     "check": "turbo run typecheck test && biome check .",
     "lint": "biome check .",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "seed:admin": "pnpm --filter @baro/api seed:admin"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.0",
