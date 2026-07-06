@@ -23,7 +23,9 @@ describe("db", () => {
     const db = createDb({ dataDir: "memory://" });
     await runMigrations(db);
 
-    await db.insert(user).values({ id: "u2", name: "T", email: "todo@example.com" });
+    await db
+      .insert(user)
+      .values({ id: "u2", name: "T", email: "todo@example.com" });
     const { todo } = await import("./schema");
     await db.insert(todo).values({
       id: "t1",
