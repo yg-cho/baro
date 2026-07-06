@@ -10,3 +10,5 @@ coverage/
 *.env.local
 .env
 .baro/
+playwright-report/
+test-results/

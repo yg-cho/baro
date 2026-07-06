@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "check": "turbo run typecheck test && biome check .",
+    "check": "turbo run typecheck test && biome check . && pnpm test:e2e",
+    "test:e2e": "pnpm --filter @baro/web test:e2e",
     "lint": "biome check .",
     "format": "biome format --write .",
     "seed:admin": "pnpm --filter @baro/api seed:admin"
