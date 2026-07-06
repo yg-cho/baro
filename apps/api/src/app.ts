@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { adminRoutes } from "./modules/admin/routes";
 import { authRoutes } from "./modules/auth/routes";
 import { healthRoutes } from "./modules/health/routes";
+import { todosRoutes } from "./modules/todos/routes";
 
 // Order matters: .doc() must come before .use()/.route() and .route() must stay
 // chained last so AppType keeps full route typing for the web RPC client.
@@ -22,6 +23,7 @@ export const app = new OpenAPIHono()
   )
   .route("/health", healthRoutes)
   .route("/api/auth", authRoutes)
-  .route("/api/admin", adminRoutes);
+  .route("/api/admin", adminRoutes)
+  .route("/api/todos", todosRoutes);
 
 export type AppType = typeof app;
