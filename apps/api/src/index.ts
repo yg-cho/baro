@@ -1,3 +1,5 @@
+import "./env";
+
 import { getDb, runMigrations } from "@baro/db";
 import { serve } from "@hono/node-server";
 import { app } from "./app";
