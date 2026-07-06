@@ -1,4 +1,5 @@
 import { randomBytes } from "node:crypto";
+import { sep } from "node:path";
 
 export function validateProjectName(name: string): string | undefined {
   if (!name) return "Project name is required";
@@ -33,7 +34,24 @@ export function generateEnvFiles(opts: { databaseUrl?: string }): {
   ];
 }
 
-/** Paths removed from the downloaded template — internal tooling and docs. */
+/** Build/dep artifact directory names — can appear nested (apps/web/.next, packages/*\/node_modules). */
+const ARTIFACT_DIR_NAMES = [
+  "node_modules",
+  ".turbo",
+  "dist",
+  "coverage",
+  ".next",
+  ".baro",
+  "playwright-report",
+  "test-results",
+];
+
+/**
+ * Paths removed from the downloaded template — internal tooling, docs, and
+ * (top-level only) build artifacts. Nested artifacts are excluded at copy
+ * time in local-copy mode via isArtifactPath; these top-level entries cover
+ * the giget download path as a safety net.
+ */
 export const SANITIZE_PATHS = [
   ".git",
   "docs/superpowers",
@@ -43,7 +61,35 @@ export const SANITIZE_PATHS = [
   ".agents",
   ".windsurf",
   "skills-lock.json",
+  ...ARTIFACT_DIR_NAMES,
 ];
+
+/** True if any path segment names a build/dep artifact dir, at any depth. */
+export function isArtifactPath(path: string): boolean {
+  return path
+    .split(sep)
+    .some((segment) => ARTIFACT_DIR_NAMES.includes(segment));
+}
+
+export type CliArgs = {
+  name?: string;
+  db?: "pglite" | "postgres";
+  databaseUrl?: string;
+  skipInstall: boolean;
+};
+
+/** Non-interactive flags: --name <n> --db pglite|postgres --database-url <url> --skip-install. */
+export function parseArgs(argv: string[]): CliArgs {
+  const args: CliArgs = { skipInstall: argv.includes("--skip-install") };
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === "--name") args.name = argv[++i];
+    else if (argv[i] === "--db") {
+      const v = argv[++i];
+      if (v === "pglite" || v === "postgres") args.db = v;
+    } else if (argv[i] === "--database-url") args.databaseUrl = argv[++i];
+  }
+  return args;
+}
 
 export function renameRootPackage(jsonText: string, name: string): string {
   const pkg = JSON.parse(jsonText);

@@ -12,7 +12,8 @@
     "test:e2e": "pnpm --filter @baro/web test:e2e",
     "lint": "biome check .",
     "format": "biome format --write .",
-    "seed:admin": "pnpm --filter @baro/api seed:admin"
+    "seed:admin": "pnpm --filter @baro/api seed:admin",
+    "smoke:create": "bash tooling/create-cli/smoke.sh"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.0",

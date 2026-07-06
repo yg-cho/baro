@@ -7,6 +7,8 @@ import * as p from "@clack/prompts";
 import { downloadTemplate } from "giget";
 import {
   generateEnvFiles,
+  isArtifactPath,
+  parseArgs,
   renameRootPackage,
   SANITIZE_PATHS,
   validateProjectName,
@@ -15,6 +17,38 @@ import {
 const TEMPLATE = "github:yg-cho/baro#main";
 
 async function main() {
+  const args = parseArgs(process.argv.slice(2));
+
+  if (args.name) {
+    const nameError = validateProjectName(args.name);
+    if (nameError) {
+      console.error(`Error: ${nameError}`);
+      process.exit(1);
+    }
+    let databaseUrl: string | undefined;
+    if (args.db === "postgres") {
+      if (!args.databaseUrl?.startsWith("postgres")) {
+        console.error(
+          "Error: --database-url must be a postgres:// URL when --db postgres",
+        );
+        process.exit(1);
+      }
+      databaseUrl = args.databaseUrl;
+    }
+    const dir = resolve(process.cwd(), args.name);
+    if (existsSync(dir)) {
+      console.error(`Error: Directory ${args.name} already exists`);
+      process.exit(1);
+    }
+    await scaffold({
+      name: args.name,
+      dir,
+      databaseUrl,
+      skipInstall: args.skipInstall,
+    });
+    return;
+  }
+
   p.intro("create-baro — fullstack app, right away");
 
   const name = await p.text({
@@ -23,6 +57,12 @@ async function main() {
     validate: validateProjectName,
   });
   if (p.isCancel(name)) return cancel();
+
+  const dir = resolve(process.cwd(), name);
+  if (existsSync(dir)) {
+    p.cancel(`Directory ${name} already exists`);
+    process.exit(1);
+  }
 
   const db = await p.select({
     message: "Database",
@@ -49,21 +89,33 @@ async function main() {
     databaseUrl = url;
   }
 
-  const dir = resolve(process.cwd(), name);
-  if (existsSync(dir)) {
-    p.cancel(`Directory ${name} already exists`);
-    process.exit(1);
-  }
+  await scaffold({ name, dir, databaseUrl, skipInstall: args.skipInstall });
+}
 
+async function scaffold(opts: {
+  name: string;
+  dir: string;
+  databaseUrl?: string;
+  skipInstall: boolean;
+}) {
+  const { name, dir, databaseUrl, skipInstall } = opts;
   const s = p.spinner();
 
   s.start("Downloading template");
   const localTemplate = process.env.CREATE_BARO_TEMPLATE_DIR;
   if (localTemplate) {
     await mkdir(dir, { recursive: true });
-    await cp(localTemplate, dir, { recursive: true });
+    await cp(localTemplate, dir, {
+      recursive: true,
+      filter: (src) => !isArtifactPath(src),
+    });
   } else {
-    await downloadTemplate(TEMPLATE, { dir });
+    try {
+      await downloadTemplate(TEMPLATE, { dir });
+    } catch {
+      p.cancel("Template download failed — check network/repo");
+      process.exit(1);
+    }
   }
   s.stop("Template ready");
 
@@ -81,12 +133,18 @@ async function main() {
   }
   s.stop("Project configured");
 
-  const skipInstall = process.argv.includes("--skip-install");
   if (!skipInstall) {
     s.start("Installing dependencies (this is the slow part)");
     const res = spawnSync("pnpm", ["install"], { cwd: dir, stdio: "pipe" });
     if (res.status !== 0) {
-      s.stop("Install failed — run `pnpm install` manually");
+      const errorCode = (res.error as NodeJS.ErrnoException | undefined)?.code;
+      if (errorCode === "ENOENT" || res.status === null) {
+        s.stop(
+          "pnpm is required (the generated project is a pnpm workspace): npm i -g pnpm — then run pnpm install in the project",
+        );
+      } else {
+        s.stop("Install failed — run `pnpm install` manually");
+      }
     } else {
       s.stop("Dependencies installed");
     }
