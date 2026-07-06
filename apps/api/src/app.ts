@@ -1,5 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { cors } from "hono/cors";
+import { adminRoutes } from "./modules/admin/routes";
 import { authRoutes } from "./modules/auth/routes";
 import { healthRoutes } from "./modules/health/routes";
 
@@ -20,6 +21,7 @@ export const app = new OpenAPIHono()
     }),
   )
   .route("/health", healthRoutes)
-  .route("/api/auth", authRoutes);
+  .route("/api/auth", authRoutes)
+  .route("/api/admin", adminRoutes);
 
 export type AppType = typeof app;
