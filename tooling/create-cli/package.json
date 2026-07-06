@@ -1,0 +1,29 @@
+{
+  "name": "create-baro",
+  "version": "0.1.0",
+  "description": "Create a baro fullstack app — Hono + Next.js, typed end to end, running in minutes",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "create-baro": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.10.0",
+    "giget": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsup": "^8.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  }
+}
