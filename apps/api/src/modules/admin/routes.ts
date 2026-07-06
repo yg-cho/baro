@@ -7,9 +7,6 @@ import { type AdminEnv, requireAdmin } from "./middleware";
 const statsRoute = createRoute({
   method: "get",
   path: "/stats",
-  // ponytail: middleware lives on the route config (not a chained .use()) because
-  // OpenAPIHono.use() widens the return type to plain Hono and drops .openapi().
-  middleware: [requireAdmin] as const,
   responses: {
     200: {
       description: "Admin dashboard stats",
@@ -18,31 +15,34 @@ const statsRoute = createRoute({
   },
 });
 
-export const adminRoutes = new OpenAPIHono<AdminEnv>().openapi(
-  statsRoute,
-  async (c) => {
-    const db = getDb();
-    const [total] = await db.select({ value: count() }).from(schema.user);
+const adminApp = new OpenAPIHono<AdminEnv>();
+// Router-level guard: every route added to this module is admin-only.
+// NOTE: .use() must be a separate statement — chaining it widens the type
+// and drops .openapi() (hono types). Do not inline into the chain.
+adminApp.use("/*", requireAdmin);
 
-    const since = new Date(Date.now() - 13 * 24 * 60 * 60 * 1000);
-    since.setHours(0, 0, 0, 0);
+export const adminRoutes = adminApp.openapi(statsRoute, async (c) => {
+  const db = getDb();
+  const [total] = await db.select({ value: count() }).from(schema.user);
 
-    const rows = await db
-      .select({
-        day: sql<string>`to_char(${schema.user.createdAt}, 'YYYY-MM-DD')`,
-        count: count(),
-      })
-      .from(schema.user)
-      .where(gte(schema.user.createdAt, since))
-      .groupBy(sql`to_char(${schema.user.createdAt}, 'YYYY-MM-DD')`)
-      .orderBy(sql`to_char(${schema.user.createdAt}, 'YYYY-MM-DD')`);
+  const since = new Date(Date.now() - 13 * 24 * 60 * 60 * 1000);
+  since.setHours(0, 0, 0, 0);
 
-    return c.json(
-      {
-        totalUsers: total?.value ?? 0,
-        signupsByDay: rows.map((r) => ({ day: r.day, count: Number(r.count) })),
-      },
-      200,
-    );
-  },
-);
+  const rows = await db
+    .select({
+      day: sql<string>`to_char(${schema.user.createdAt}, 'YYYY-MM-DD')`,
+      count: count(),
+    })
+    .from(schema.user)
+    .where(gte(schema.user.createdAt, since))
+    .groupBy(sql`to_char(${schema.user.createdAt}, 'YYYY-MM-DD')`)
+    .orderBy(sql`to_char(${schema.user.createdAt}, 'YYYY-MM-DD')`);
+
+  return c.json(
+    {
+      totalUsers: Number(total?.value ?? 0),
+      signupsByDay: rows.map((r) => ({ day: r.day, count: Number(r.count) })),
+    },
+    200,
+  );
+});

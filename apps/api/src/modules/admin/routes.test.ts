@@ -43,6 +43,7 @@ describe("GET /api/admin/stats", () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.totalUsers).toBeGreaterThanOrEqual(2);
+    expect(typeof body.totalUsers).toBe("number");
     expect(Array.isArray(body.signupsByDay)).toBe(true);
     expect(body.signupsByDay.length).toBeGreaterThanOrEqual(1);
     expect(body.signupsByDay[0]).toHaveProperty("day");
