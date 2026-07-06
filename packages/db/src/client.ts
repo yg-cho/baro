@@ -1,3 +1,4 @@
+import { mkdirSync } from "node:fs";
 import { PGlite } from "@electric-sql/pglite";
 import { drizzle as drizzleNodePg } from "drizzle-orm/node-postgres";
 import { drizzle as drizzlePglite } from "drizzle-orm/pglite";
@@ -17,9 +18,15 @@ export function createDb(options: CreateDbOptions = {}) {
     const pool = new Pool({ connectionString: url });
     return drizzleNodePg(pool, { schema });
   }
-  const client = new PGlite(
-    options.dataDir ?? process.env.PGLITE_DATA_DIR ?? ".baro/pglite",
-  );
+  const dataDir =
+    options.dataDir ?? process.env.PGLITE_DATA_DIR ?? ".baro/pglite";
+  // ponytail: PGlite's node fs backend does a non-recursive mkdir, so a fresh
+  // checkout (.baro/ is gitignored, doesn't exist) crashes on first boot.
+  // Create the parent chain ourselves; no-op for the virtual "memory://" dir.
+  if (!dataDir.startsWith("memory://")) {
+    mkdirSync(dataDir, { recursive: true });
+  }
+  const client = new PGlite(dataDir);
   return drizzlePglite(client, { schema });
 }
 

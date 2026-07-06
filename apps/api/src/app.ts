@@ -1,5 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { cors } from "hono/cors";
+import { authRoutes } from "./modules/auth/routes";
 import { healthRoutes } from "./modules/health/routes";
 
 // Order matters: .doc() must come before .use()/.route() and .route() must stay
@@ -10,7 +11,13 @@ export const app = new OpenAPIHono()
     openapi: "3.1.0",
     info: { title: "baro API", version: "0.0.0" },
   })
-  .use(cors({ origin: process.env.WEB_ORIGIN ?? "http://localhost:3000" }))
-  .route("/health", healthRoutes);
+  .use(
+    cors({
+      origin: process.env.WEB_ORIGIN ?? "http://localhost:3000",
+      credentials: true,
+    }),
+  )
+  .route("/health", healthRoutes)
+  .route("/api/auth", authRoutes);
 
 export type AppType = typeof app;

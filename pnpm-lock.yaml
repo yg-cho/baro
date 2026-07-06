@@ -17,6 +17,12 @@ importers:
 
   apps/api:
     dependencies:
+      '@baro/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@baro/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@baro/shared':
         specifier: workspace:*
         version: link:../../packages/shared

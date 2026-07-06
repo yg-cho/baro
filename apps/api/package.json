@@ -13,6 +13,8 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@baro/auth": "workspace:*",
+    "@baro/db": "workspace:*",
     "@baro/shared": "workspace:*",
     "@hono/node-server": "^1.14.0",
     "@hono/zod-openapi": "^1.0.0",
