@@ -17,6 +17,10 @@ export function enabledSocialProviders() {
 export function createAuth(db: Db) {
   const social = enabledSocialProviders();
 
+  if (process.env.NODE_ENV === "production" && !process.env.BETTER_AUTH_SECRET) {
+    throw new Error("BETTER_AUTH_SECRET must be set in production");
+  }
+
   return betterAuth({
     basePath: "/api/auth",
     secret: process.env.BETTER_AUTH_SECRET ?? "baro-dev-secret-change-me",
