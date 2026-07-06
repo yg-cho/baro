@@ -40,6 +40,7 @@ export function createAuth(db: Db) {
       },
     },
     emailVerification: {
+      sendOnSignUp: true,
       sendVerificationEmail: async ({ user, url }) => {
         console.log(`[baro auth] verify email for ${user.email}: ${url}`);
       },

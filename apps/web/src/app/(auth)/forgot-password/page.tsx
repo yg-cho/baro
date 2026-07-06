@@ -15,7 +15,7 @@ export default function ForgotPasswordPage() {
     const email = String(new FormData(e.currentTarget).get("email"));
     await authClient.requestPasswordReset({
       email,
-      redirectTo: "/reset-password",
+      redirectTo: `${window.location.origin}/reset-password`,
     });
     setSent(true); // always confirm — do not leak which emails exist
   }
