@@ -16,6 +16,10 @@ apps/web/src/features/<feature>/              # components + query hooks
 apps/web/src/app/<feature>/page.tsx           # route
 ```
 
+Then register the module in `apps/api/src/app.ts`:
+`.route("/api/<feature>", <feature>Routes)`, chained **last** (per the
+chain-order rule below).
+
 Copy the todos feature. It is the formula.
 
 ## Rules

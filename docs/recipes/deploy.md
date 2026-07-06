@@ -25,6 +25,11 @@ continuously, since the api isn't a serverless function).
      | `PORT` | whatever your host expects (Railway/Fly usually inject this) |
    - Migrations run automatically at boot (`runMigrations()` in
      `apps/api/src/index.ts`) — no separate migration step to wire up.
+   - **Caution:** `tsx` is a devDependency. Hosts that set
+     `NODE_ENV=production` before install (Railway, Fly) make `pnpm install`
+     skip devDependencies, so `start` dies with `tsx: command not found`.
+     Fix: install with `pnpm install --prod=false`, or move `tsx` to
+     `dependencies` in `apps/api/package.json`.
 
 3. **Deploy the web app** to Vercel, root directory `apps/web`. Env var:
    | Var | Value |

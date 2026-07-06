@@ -32,9 +32,21 @@ database setup step. See the
 [ARCHITECTURE.md](https://github.com/yg-cho/baro/blob/main/ARCHITECTURE.md)
 for how to add a feature.
 
+The scaffolded `.gitignore` retains a few internal ignore lines (`.claude/`,
+`.agents/`, etc.) left over from this repo — harmless, delete freely.
+
 ## Requirements
 
 Node >=22, pnpm.
+
+## Publishing (maintainers)
+
+```bash
+cd tooling/create-cli && npm publish
+```
+
+`prepublishOnly` builds `dist` automatically. First publish needs
+`npm login`.
 
 ## License
 

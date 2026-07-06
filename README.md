@@ -21,7 +21,7 @@ pnpm install && pnpm dev
 
 web on `http://localhost:3000`, api on `http://localhost:8000`.
 
-Requirements: Node >=22, pnpm 10.
+Requirements: Node >=22, pnpm 10 (corepack enable).
 
 ## What you get
 
@@ -43,6 +43,9 @@ Requirements: Node >=22, pnpm 10.
 | `pnpm test:e2e` | Playwright smoke tests only |
 | `pnpm smoke:create` | scaffold a throwaway app via the CLI and sanity-check it |
 | `pnpm --filter @baro/db db:generate` | generate a Drizzle migration after a schema edit |
+
+`smoke:create` and the e2e scripts are bash/POSIX — Windows users need WSL or
+Git Bash.
 
 ## Stack
 
