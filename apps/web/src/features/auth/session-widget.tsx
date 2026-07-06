@@ -27,6 +27,11 @@ export function SessionWidget() {
   return (
     <div className="flex items-center gap-3">
       <span className="text-sm">{session.user.email}</span>
+      {session.user.role === "admin" && (
+        <Link href="/admin">
+          <Button variant="ghost">Admin</Button>
+        </Link>
+      )}
       <Button
         variant="outline"
         onClick={async () => {
