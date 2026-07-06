@@ -36,6 +36,7 @@ export function UserTable() {
       setError(res.error.message ?? "Failed to load users");
       return;
     }
+    setError(null);
     setUsers(res.data.users as AdminUser[]);
   }, [search]);
 
@@ -44,17 +45,31 @@ export function UserTable() {
   }, [load]);
 
   async function setRole(userId: string, role: "user" | "admin") {
-    await authClient.admin.setRole({ userId, role });
-    load();
+    try {
+      const res = await authClient.admin.setRole({ userId, role });
+      if (res.error) {
+        setError(res.error.message ?? "Failed to update role");
+        return;
+      }
+      load();
+    } catch {
+      setError("Failed to update role");
+    }
   }
 
   async function toggleBan(u: AdminUser) {
-    if (u.banned) {
-      await authClient.admin.unbanUser({ userId: u.id });
-    } else {
-      await authClient.admin.banUser({ userId: u.id });
+    try {
+      const res = u.banned
+        ? await authClient.admin.unbanUser({ userId: u.id })
+        : await authClient.admin.banUser({ userId: u.id });
+      if (res.error) {
+        setError(res.error.message ?? "Failed to update ban status");
+        return;
+      }
+      load();
+    } catch {
+      setError("Failed to update ban status");
     }
-    load();
   }
 
   return (

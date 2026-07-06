@@ -2,7 +2,12 @@ import type { AdminStats } from "@baro/shared/schemas/admin";
 import { Card } from "@/components/ui/card";
 
 export function StatsCards({ stats }: { stats: AdminStats }) {
-  const last7 = stats.signupsByDay.slice(-7).reduce((s, d) => s + d.count, 0);
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 6);
+  const cutoffKey = cutoff.toISOString().slice(0, 10);
+  const last7 = stats.signupsByDay
+    .filter((d) => d.day >= cutoffKey)
+    .reduce((s, d) => s + d.count, 0);
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <Card>
