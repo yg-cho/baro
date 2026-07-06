@@ -4,6 +4,25 @@
   "description": "Create a baro fullstack app — Hono + Next.js, typed end to end, running in minutes",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yg-cho/baro.git",
+    "directory": "tooling/create-cli"
+  },
+  "homepage": "https://github.com/yg-cho/baro",
+  "bugs": "https://github.com/yg-cho/baro/issues",
+  "keywords": [
+    "create-app",
+    "fullstack",
+    "hono",
+    "nextjs",
+    "typescript",
+    "starter",
+    "boilerplate",
+    "scaffold",
+    "drizzle",
+    "better-auth"
+  ],
   "bin": {
     "create-baro": "./dist/index.js"
   },
