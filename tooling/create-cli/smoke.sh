@@ -26,6 +26,7 @@ test ! -d tooling || { echo "FAIL: tooling not sanitized"; exit 1; }
 test ! -d docs/superpowers || { echo "FAIL: internal docs not sanitized"; exit 1; }
 test ! -d node_modules || { echo "FAIL: root node_modules not sanitized"; exit 1; }
 test ! -d apps/web/.next || { echo "FAIL: nested .next not sanitized"; exit 1; }
+test ! -f apps/web/CLAUDE.md || { echo "FAIL: agent config not sanitized"; exit 1; }
 grep -q "\"name\": \"$APP_NAME\"" package.json || { echo "FAIL: root rename"; exit 1; }
 
 echo "==> installing"

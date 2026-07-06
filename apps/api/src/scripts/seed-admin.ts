@@ -1,3 +1,4 @@
+import "../env";
 import { createAuth } from "@baro/auth";
 import { getDb, runMigrations, schema } from "@baro/db";
 import { eq } from "drizzle-orm";

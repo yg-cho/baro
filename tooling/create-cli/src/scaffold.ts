@@ -61,6 +61,8 @@ export const SANITIZE_PATHS = [
   ".agents",
   ".windsurf",
   "skills-lock.json",
+  "apps/web/CLAUDE.md",
+  "apps/web/AGENTS.md",
   ...ARTIFACT_DIR_NAMES,
 ];
 

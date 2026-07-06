@@ -65,6 +65,8 @@ describe("SANITIZE_PATHS", () => {
       ".claude",
       ".agents",
       ".windsurf",
+      "apps/web/CLAUDE.md",
+      "apps/web/AGENTS.md",
     ]) {
       expect(SANITIZE_PATHS).toContain(p);
     }

@@ -135,7 +135,11 @@ async function scaffold(opts: {
 
   if (!skipInstall) {
     s.start("Installing dependencies (this is the slow part)");
-    const res = spawnSync("pnpm", ["install"], { cwd: dir, stdio: "pipe" });
+    const res = spawnSync("pnpm", ["install"], {
+      cwd: dir,
+      stdio: "pipe",
+      shell: process.platform === "win32",
+    });
     if (res.status !== 0) {
       const errorCode = (res.error as NodeJS.ErrnoException | undefined)?.code;
       if (errorCode === "ENOENT" || res.status === null) {
@@ -150,11 +154,17 @@ async function scaffold(opts: {
     }
   }
 
-  spawnSync("git", ["init", "-b", "main"], { cwd: dir, stdio: "ignore" });
-  spawnSync("git", ["add", "-A"], { cwd: dir, stdio: "ignore" });
+  const shell = process.platform === "win32";
+  spawnSync("git", ["init", "-b", "main"], {
+    cwd: dir,
+    stdio: "ignore",
+    shell,
+  });
+  spawnSync("git", ["add", "-A"], { cwd: dir, stdio: "ignore", shell });
   spawnSync("git", ["commit", "-m", "chore: scaffold with create-baro"], {
     cwd: dir,
     stdio: "ignore",
+    shell,
   });
 
   p.note(
