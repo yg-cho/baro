@@ -2,10 +2,6 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    env: {
-      PGLITE_DATA_DIR: "memory://",
-    },
-    setupFiles: ["./src/test-setup.ts"],
     // PGlite WASM init + scrypt hashing can take >5s on slow CI runners
     testTimeout: 30_000,
     hookTimeout: 30_000,
